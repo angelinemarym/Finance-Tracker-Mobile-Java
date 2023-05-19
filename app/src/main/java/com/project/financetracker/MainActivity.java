@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             List<TransactionModel> transactionModels = repository.getAll(0, 10);
-//
+
             transactionAdapter = new TransactionAdapter(transactionModels);
             recyclerView.setAdapter(transactionAdapter);
 
@@ -88,8 +88,8 @@ public class MainActivity extends AppCompatActivity {
         TextView income = findViewById(R.id.income);
         TextView expense = findViewById(R.id.expense);
 
-        balance.setText(String.format(Locale.ENGLISH, "$ %.0f", repository.getBalance()));
-        income.setText(String.format(Locale.ENGLISH, "$ %.0f", repository.getIncome()));
-        expense.setText(String.format(Locale.ENGLISH, "$ %.0f", repository.getExpense()));
+        balance.setText(String.format(Locale.ENGLISH, "Rp %.0f", repository.getBalance()));
+        income.setText(String.format(Locale.ENGLISH, "Rp %.0f", repository.getIncome()));
+        expense.setText(String.format(Locale.ENGLISH, "Rp %.0f", repository.getExpense()));
     }
 }

@@ -3,8 +3,11 @@ package com.project.financetracker;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +29,8 @@ public class AddTransactionActivity extends AppCompatActivity {
         TextInputLayout labelLayout = (TextInputLayout) findViewById(R.id.labelLayout);
         TextInputLayout amountLayout = (TextInputLayout) findViewById(R.id.amountLayout);
         TextInputLayout descriptionLayout = (TextInputLayout) findViewById(R.id.descriptionLayout);
+        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+        RadioButton radioButtonExpense = (RadioButton) findViewById(R.id.radioButtonExpense);
 
         Button addTransactionBtn = (Button) findViewById(R.id.addTransactionButton);
 
@@ -58,9 +63,9 @@ public class AddTransactionActivity extends AppCompatActivity {
         });
 
         addTransactionBtn.setOnClickListener(view -> {
+            double amount = Double.parseDouble(amountInput.getText().toString().isEmpty() ? "0" :amountInput.getText().toString());
             String label = labelInput.getText().toString();
             String description = descriptionInput.getText().toString();
-            double amount = Double.parseDouble(amountInput.getText().toString().isEmpty() ? "0" :amountInput.getText().toString());
 
             if (label.isEmpty())
                 labelLayout.setError("Please enter a valid label");

@@ -86,6 +86,36 @@
             android:maxLines="1"
             android:inputType="text"/>
     </com.google.android.material.textfield.TextInputLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Transaction Type" />
+        <RadioGroup
+            android:id="@+id/radioGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/radioButtonIncome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Income"
+                android:layout_marginRight="24dp"
+                android:textColor="@color/blue1"
+                android:checked="true"/>
+            <RadioButton
+                android:id="@+id/radioButtonExpense"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Expense"
+                android:textColor="@color/blue1"/>
+        </RadioGroup>
+    </LinearLayout>
     <Button
         android:id="@+id/addTransactionButton"
         android:layout_width="match_parent"

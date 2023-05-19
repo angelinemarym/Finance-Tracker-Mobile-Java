@@ -59,15 +59,6 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         }
 
         holder.label.setText(transactionModel.getLabel());
-
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent(context, DetailedActivity.class);
-//                intent.putExtra("transaction", transaction.getLabel());
-//                context.startActivity(intent);
-//            }
-//        });
     }
 
     @Override
