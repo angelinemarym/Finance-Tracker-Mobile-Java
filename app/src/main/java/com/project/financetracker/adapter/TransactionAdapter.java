@@ -1,25 +1,28 @@
-package com.project.financetracker;
-
-import android.view.View;
-
-import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.ArrayList;
+package com.project.financetracker.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.project.financetracker.R;
+import com.project.financetracker.model.TransactionModel;
+
+import java.util.List;
+import java.util.Locale;
 
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionHolder> {
 
-    private ArrayList<Transaction> transactions;
+    private List<TransactionModel> transactionModels;
 
-    public TransactionAdapter(ArrayList<Transaction> transactions) {
-        this.transactions = transactions;
+    public TransactionAdapter(List<TransactionModel> transactionModels) {
+        this.transactionModels = transactionModels;
     }
 
     public static class TransactionHolder extends RecyclerView.ViewHolder {
@@ -33,6 +36,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         }
     }
 
+    @NonNull
     @Override
     public TransactionHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
@@ -40,20 +44,21 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         return new TransactionHolder(view);
     }
 
+
     @Override
     public void onBindViewHolder(TransactionHolder holder, int position) {
-        Transaction transaction = transactions.get(position);
+        TransactionModel transactionModel = transactionModels.get(position);
         Context context = holder.amount.getContext();
 
-        if (transaction.getAmount() >= 0) {
-            holder.amount.setText(String.format("+ Rp%.0f", transaction.getAmount()));
+        if (transactionModel.getAmount() >= 0) {
+            holder.amount.setText(String.format(Locale.ENGLISH, "+ Rp%.0f", transactionModel.getAmount()));
             holder.amount.setTextColor(ContextCompat.getColor(context, R.color.green1));
         } else {
-            holder.amount.setText(String.format("- Rp%.0f", Math.abs(transaction.getAmount())));
+            holder.amount.setText(String.format(Locale.ENGLISH, "- Rp%.0f", Math.abs(transactionModel.getAmount())));
             holder.amount.setTextColor(ContextCompat.getColor(context, R.color.orange1));
         }
 
-        holder.label.setText(transaction.getLabel());
+        holder.label.setText(transactionModel.getLabel());
 
 //        holder.itemView.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -67,11 +72,11 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
 
     @Override
     public int getItemCount() {
-        return transactions.size();
+        return transactionModels.size();
     }
 
-    public void setData(ArrayList<Transaction> transactions) {
-        this.transactions = transactions;
-        notifyDataSetChanged();
+    public void setData(List<TransactionModel> transactionModels) {
+        this.transactionModels = transactionModels;
+        notifyItemInserted(transactionModels.size());
     }
 }

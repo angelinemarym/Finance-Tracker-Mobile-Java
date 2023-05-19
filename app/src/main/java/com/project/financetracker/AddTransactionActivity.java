@@ -1,15 +1,18 @@
 package com.project.financetracker;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.project.financetracker.repository.Repository;
+import com.project.financetracker.repository.TransactionRepository;
 
 public class AddTransactionActivity extends AppCompatActivity {
     @Override
@@ -57,18 +60,24 @@ public class AddTransactionActivity extends AppCompatActivity {
         addTransactionBtn.setOnClickListener(view -> {
             String label = labelInput.getText().toString();
             String description = descriptionInput.getText().toString();
-            Double amount = Double.parseDouble(amountInput.getText().toString().isEmpty() ? "0" :amountInput.getText().toString());
+            double amount = Double.parseDouble(amountInput.getText().toString().isEmpty() ? "0" :amountInput.getText().toString());
 
             if (label.isEmpty())
                 labelLayout.setError("Please enter a valid label");
             if (amount == 0)
                 amountLayout.setError("Please enter a valid amount");
+
+            Repository transactionsRepository = new TransactionRepository(AddTransactionActivity.this);
+            boolean success = transactionsRepository.create(label, amount, description);
+            if (!success) {
+                Toast.makeText(AddTransactionActivity.this, "Failed to create new transactions", Toast.LENGTH_SHORT).show();
+            }
+
+            finish();
         });
 
         ImageButton closeBtn = (ImageButton) findViewById(R.id.closeButton);
 
-        closeBtn.setOnClickListener(view -> {
-            finish();
-        });
+        closeBtn.setOnClickListener(view -> finish());
     }
 }
