@@ -2,15 +2,20 @@ package com.project.financetracker;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.project.financetracker.adapter.TransactionAdapter;
 import com.project.financetracker.model.TransactionModel;
 import com.project.financetracker.repository.Repository;
@@ -23,7 +28,8 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
     private final Repository repository = new TransactionRepository(MainActivity.this);
     private TransactionAdapter transactionAdapter;
-
+    private LinearLayoutManager linearLayoutManager;
+    private List<TransactionModel> transactionModels;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.transactions_recyclerview);
 
         try {
-            List<TransactionModel> transactionModels = repository.getAll(0, 10);
+            transactionModels = repository.getAll(0, 10);
 
             transactionAdapter = new TransactionAdapter(transactionModels);
             recyclerView.setAdapter(transactionAdapter);
@@ -80,8 +86,33 @@ public class MainActivity extends AppCompatActivity {
         } catch(ParseException e) {
             Toast.makeText(MainActivity.this, "Error getting transaction data: " + e, Toast.LENGTH_SHORT).show();
         }
+
+        // Swipe to remove
+        linearLayoutManager = new LinearLayoutManager(this);
+        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+                Repository transactionsRepository = new TransactionRepository(MainActivity.this);
+                transactionsRepository.delete(transactionModels.get(viewHolder.getAdapterPosition()).getId());
+                showSnackbar();
+                updateDashboard();
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
+    private void showSnackbar() {
+        View view = findViewById(R.id.coordinator);
+        Snackbar snackbar = Snackbar.make(view, "Transaction deleted!", Snackbar.LENGTH_LONG);
+        snackbar.setTextColor(ContextCompat.getColor(this, R.color.white)).show();
+    }
 
     private void updateDashboard (){
         TextView balance = findViewById(R.id.balance);

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class TransactionRepository extends SQLiteOpenHelper implements Repository {
+public class  TransactionRepository extends SQLiteOpenHelper implements Repository {
     private static final String TABLE_NAME = "transactions";
     public TransactionRepository(@Nullable Context context) {
         super(context, "transaction.db", null, 1);
