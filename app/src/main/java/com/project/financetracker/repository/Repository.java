@@ -3,7 +3,7 @@ package com.project.financetracker.repository;
 import com.project.financetracker.model.TransactionModel;
 
 import java.text.ParseException;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 public interface Repository {

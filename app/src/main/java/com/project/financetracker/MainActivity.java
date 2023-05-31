@@ -30,7 +30,7 @@ import com.project.financetracker.repository.TransactionRepository;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -63,11 +63,11 @@ public class MainActivity extends AppCompatActivity {
         MaterialDatePicker<Pair<Long, Long>> picker = builder.build();
 
         try {
-//            if(startDate != null && endDate != null){
-//                transactionModels = repository.getByDateRange(startDate, endDate);
-//            } else{
+            if(startDate != null && endDate != null){
+                transactionModels = repository.getByDateRange(startDate, endDate);
+            } else{
                 transactionModels = repository.getAll(0, 10);
-//            }
+            }
 
             transactionAdapter = new TransactionAdapter(transactionModels);
             recyclerView.setAdapter(transactionAdapter);
@@ -84,12 +84,13 @@ public class MainActivity extends AppCompatActivity {
                         int lastIndex = transactionModels.size() - 1;
 
                         try {
+//                          TODO: Add pagination for getByDateRange function
                             List<TransactionModel> newData;
-//                            if(startDate != null && endDate != null){
-//                                newData = repository.getByDateRange(startDate, endDate);
-//                            } else{
+                            if(startDate != null && endDate != null){
+                                newData = repository.getByDateRange(startDate, endDate);
+                            } else{
                                 newData = repository.getAll(transactionModels.get(lastIndex).getId(), 10);
-//                            }
+                            }
                             transactionModels.addAll(newData);
 
                             transactionAdapter.setData(transactionModels);
@@ -109,9 +110,7 @@ public class MainActivity extends AppCompatActivity {
             });
 
             ImageButton filterBtn = (ImageButton) findViewById(R.id.filter_btn);
-            filterBtn.setOnClickListener(view ->{
-                picker.show(this.getSupportFragmentManager(), picker.toString());
-            });
+            filterBtn.setOnClickListener(view -> picker.show(this.getSupportFragmentManager(), picker.toString()));
         } catch(ParseException e) {
             Toast.makeText(MainActivity.this, "Error getting transaction data: " + e, Toast.LENGTH_SHORT).show();
         }

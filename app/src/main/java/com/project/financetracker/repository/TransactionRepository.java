@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -14,7 +15,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,7 +28,7 @@ public class TransactionRepository extends SQLiteOpenHelper implements Repositor
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createTableStatement = "CREATE TABLE " + TABLE_NAME + " (id INTEGER PRIMARY KEY AUTOINCREMENT, label VARCHAR(255) NOT NULL, amount REAL NOT NULL DEFAULT 0, description TEXT, createdAt DATETIME DEFAULT CURRENT_TIMESTAMP)";
+        String createTableStatement = "CREATE TABLE " + TABLE_NAME + " (id INTEGER PRIMARY KEY AUTOINCREMENT, label VARCHAR(255) NOT NULL, amount REAL NOT NULL DEFAULT 0, description TEXT, createdAt DATE DEFAULT CURRENT_DATE)";
         db.execSQL(createTableStatement);
     }
 
@@ -44,8 +45,7 @@ public class TransactionRepository extends SQLiteOpenHelper implements Repositor
         Cursor cursor = db.rawQuery(selectStatement, null);
         if(cursor.moveToFirst()) {
             String dateTime = cursor.getString(4);
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-            model = new TransactionModel(cursor.getInt(0), cursor.getString(1), cursor.getDouble(2), cursor.getString(3), dateFormat.parse(dateTime));
+            model = new TransactionModel(cursor.getInt(0), cursor.getString(1), cursor.getDouble(2), cursor.getString(3), Date.valueOf(dateTime));
         } else {
             cursor.close();
             throw new Exception();
@@ -67,14 +67,14 @@ public class TransactionRepository extends SQLiteOpenHelper implements Repositor
 
         Cursor cursor = db.rawQuery(selectStatement, null);
         if (cursor.moveToFirst()) {
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
             do {
+                Log.i("test: ", cursor.getString(4));
                 models.add(new TransactionModel(
                         cursor.getInt(0),
                         cursor.getString(1),
                         cursor.getDouble(2),
                         cursor.getString(3),
-                        dateFormat.parse(cursor.getString(4))));
+                        Date.valueOf(cursor.getString(4))));
             } while (cursor.moveToNext());
         }
 
@@ -86,20 +86,19 @@ public class TransactionRepository extends SQLiteOpenHelper implements Repositor
     public List<TransactionModel> getByDateRange(Date start, Date end) throws ParseException {
         List<TransactionModel> models = new ArrayList<>();
 
-        String selectStatement = String.format(Locale.ENGLISH, "SELECT * FROM %s WHERE createdAt >= %s AND createdAt <= %s", TABLE_NAME, start, end);
+        String selectStatement = String.format(Locale.ENGLISH, "SELECT * FROM %s WHERE createdAt >= '%s' AND createdAt <= '%s'", TABLE_NAME, start.toString(), end.toString());
 
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.rawQuery(selectStatement, null);
         if (cursor.moveToFirst()) {
-            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
             do {
                 models.add(new TransactionModel(
                         cursor.getInt(0),
                         cursor.getString(1),
                         cursor.getDouble(2),
                         cursor.getString(3),
-                        dateFormat.parse(cursor.getString(4))));
+                        Date.valueOf(cursor.getString(4))));
             } while (cursor.moveToNext());
         }
 
