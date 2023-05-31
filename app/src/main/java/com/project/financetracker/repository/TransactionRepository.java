@@ -14,11 +14,12 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
 
-public class  TransactionRepository extends SQLiteOpenHelper implements Repository {
+public class TransactionRepository extends SQLiteOpenHelper implements Repository {
     private static final String TABLE_NAME = "transactions";
     public TransactionRepository(@Nullable Context context) {
         super(context, "transaction.db", null, 1);
@@ -81,6 +82,30 @@ public class  TransactionRepository extends SQLiteOpenHelper implements Reposito
         return models;
     }
 
+    @Override
+    public List<TransactionModel> getByDateRange(Date start, Date end) throws ParseException {
+        List<TransactionModel> models = new ArrayList<>();
+
+        String selectStatement = String.format(Locale.ENGLISH, "SELECT * FROM %s WHERE createdAt >= %s AND createdAt <= %s", TABLE_NAME, start, end);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(selectStatement, null);
+        if (cursor.moveToFirst()) {
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+            do {
+                models.add(new TransactionModel(
+                        cursor.getInt(0),
+                        cursor.getString(1),
+                        cursor.getDouble(2),
+                        cursor.getString(3),
+                        dateFormat.parse(cursor.getString(4))));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        return models;
+    }
     @Override
     public boolean create(String label, double amount, String description) {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -155,4 +180,5 @@ public class  TransactionRepository extends SQLiteOpenHelper implements Reposito
             return 0;
         }
     }
+
 }
