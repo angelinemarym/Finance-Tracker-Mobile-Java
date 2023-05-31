@@ -3,17 +3,23 @@ package com.project.financetracker;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.util.Pair;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.datepicker.MaterialDatePicker;
+import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.project.financetracker.adapter.TransactionAdapter;
@@ -22,6 +28,9 @@ import com.project.financetracker.repository.Repository;
 import com.project.financetracker.repository.TransactionRepository;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,6 +39,9 @@ public class MainActivity extends AppCompatActivity {
     private TransactionAdapter transactionAdapter;
     private LinearLayoutManager linearLayoutManager;
     private List<TransactionModel> transactionModels;
+    MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
+    private Calendar now = Calendar.getInstance();
+    private Date startDate = null, endDate = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,8 +59,15 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.transactions_recyclerview);
 
+        builder.setSelection(new androidx.core.util.Pair<>(now.getTimeInMillis(), now.getTimeInMillis()));
+        MaterialDatePicker<Pair<Long, Long>> picker = builder.build();
+
         try {
-            transactionModels = repository.getAll(0, 10);
+//            if(startDate != null && endDate != null){
+//                transactionModels = repository.getByDateRange(startDate, endDate);
+//            } else{
+                transactionModels = repository.getAll(0, 10);
+//            }
 
             transactionAdapter = new TransactionAdapter(transactionModels);
             recyclerView.setAdapter(transactionAdapter);
@@ -65,7 +84,12 @@ public class MainActivity extends AppCompatActivity {
                         int lastIndex = transactionModels.size() - 1;
 
                         try {
-                            List<TransactionModel> newData = repository.getAll(transactionModels.get(lastIndex).getId(), 10);
+                            List<TransactionModel> newData;
+//                            if(startDate != null && endDate != null){
+//                                newData = repository.getByDateRange(startDate, endDate);
+//                            } else{
+                                newData = repository.getAll(transactionModels.get(lastIndex).getId(), 10);
+//                            }
                             transactionModels.addAll(newData);
 
                             transactionAdapter.setData(transactionModels);
@@ -83,9 +107,27 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, AddTransactionActivity.class);
                 startActivity(intent);
             });
+
+            ImageButton filterBtn = (ImageButton) findViewById(R.id.filter_btn);
+            filterBtn.setOnClickListener(view ->{
+                picker.show(this.getSupportFragmentManager(), picker.toString());
+            });
         } catch(ParseException e) {
             Toast.makeText(MainActivity.this, "Error getting transaction data: " + e, Toast.LENGTH_SHORT).show();
         }
+
+        picker.addOnPositiveButtonClickListener(
+                new MaterialPickerOnPositiveButtonClickListener() {
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void onPositiveButtonClick(Object selection) {
+                        startDate = new Date(picker.getSelection().first);
+                        endDate = new Date(picker.getSelection().second);
+                        loadMainPage();
+//                        Log.i("Selected Date is : " , picker.getSelection().first.toString());
+//                        Log.i("Selected Date is : " , picker.getSelection().second.toString());
+                    }
+                });
 
         // Swipe to remove
         linearLayoutManager = new LinearLayoutManager(this);

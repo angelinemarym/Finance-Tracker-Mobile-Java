@@ -28,11 +28,15 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
     public static class TransactionHolder extends RecyclerView.ViewHolder {
         public TextView label;
         public TextView amount;
+        public TextView description;
+        public TextView createdAt;
 
         public TransactionHolder(View itemView) {
             super(itemView);
             label = itemView.findViewById(R.id.transaction_label);
             amount = itemView.findViewById(R.id.transaction_amount);
+            description = itemView.findViewById(R.id.transaction_description);
+            createdAt = itemView.findViewById(R.id.transaction_createdAt);
         }
     }
 
@@ -59,6 +63,8 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         }
 
         holder.label.setText(transactionModel.getLabel());
+        holder.description.setText(transactionModel.getDescription());
+        holder.createdAt.setText(transactionModel.getCreatedAt().toString());
     }
 
     @Override
