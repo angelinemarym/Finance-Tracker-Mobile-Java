@@ -133,6 +133,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+        //Edit
+        recyclerView.setOnClickListener(view -> {
+            Intent edit_intent = new Intent(MainActivity.this, EditTransactionActivity.class);
+            startActivity(edit_intent);
+        });
+
         // Swipe to remove
         linearLayoutManager = new LinearLayoutManager(this);
         ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
