@@ -34,7 +34,7 @@ import java.sql.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements RecyclerViewInterface {
     private final Repository repository = new TransactionRepository(MainActivity.this);
     private TransactionAdapter transactionAdapter;
     private LinearLayoutManager linearLayoutManager;
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                 transactionDateRange.setText("All");
             }
 
-            transactionAdapter = new TransactionAdapter(transactionModels);
+            transactionAdapter = new TransactionAdapter(transactionModels, this);
             recyclerView.setAdapter(transactionAdapter);
 
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -133,12 +133,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-        //Edit
-        recyclerView.setOnClickListener(view -> {
-            Intent edit_intent = new Intent(MainActivity.this, EditTransactionActivity.class);
-            startActivity(edit_intent);
-        });
-
         // Swipe to remove
         linearLayoutManager = new LinearLayoutManager(this);
         ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
@@ -174,5 +168,15 @@ public class MainActivity extends AppCompatActivity {
         balance.setText(String.format(Locale.ENGLISH, "Rp %.0f", repository.getBalance()));
         income.setText(String.format(Locale.ENGLISH, "Rp %.0f", repository.getIncome()));
         expense.setText(String.format(Locale.ENGLISH, "Rp %.0f", repository.getExpense()));
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        Intent edit_intent = new Intent(MainActivity.this, EditTransactionActivity.class);
+        edit_intent.putExtra("label", transactionModels.get(position).getLabel());
+        edit_intent.putExtra("amount", transactionModels.get(position).getAmount());
+        edit_intent.putExtra("description", transactionModels.get(position).getDescription());
+
+        startActivity(edit_intent);
     }
 }
