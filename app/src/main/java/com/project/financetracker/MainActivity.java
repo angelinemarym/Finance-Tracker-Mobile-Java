@@ -173,9 +173,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     @Override
     public void onItemClick(int position) {
         Intent edit_intent = new Intent(MainActivity.this, EditTransactionActivity.class);
+        edit_intent.putExtra("id", transactionModels.get(position).getId());
         edit_intent.putExtra("label", transactionModels.get(position).getLabel());
         edit_intent.putExtra("amount", transactionModels.get(position).getAmount());
         edit_intent.putExtra("description", transactionModels.get(position).getDescription());
+        edit_intent.putExtra("createdAt", transactionModels.get(position).getCreatedAt());
 
         startActivity(edit_intent);
     }

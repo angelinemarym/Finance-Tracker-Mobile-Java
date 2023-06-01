@@ -67,46 +67,30 @@ public class AddTransactionActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
 
-                if (checkedId == R.id.radioButtonExpense) {
-                    addTransactionBtn.setOnClickListener(view -> {
-                        double amount = Double.parseDouble(amountInput.getText().toString().isEmpty() ? "0" :amountInput.getText().toString());
-                        String label = labelInput.getText().toString();
-                        String description = descriptionInput.getText().toString();
+                addTransactionBtn.setOnClickListener(view -> {
+                    boolean success = false;
+                    double amount = Double.parseDouble(amountInput.getText().toString().isEmpty() ? "0" :amountInput.getText().toString());
+                    String label = labelInput.getText().toString();
+                    String description = descriptionInput.getText().toString();
 
-                        if (label.isEmpty())
-                            labelLayout.setError("Please enter a valid label");
-                        if (amount == 0)
-                            amountLayout.setError("Please enter a valid amount");
-
-                        Repository transactionsRepository = new TransactionRepository(AddTransactionActivity.this);
-                        boolean success = transactionsRepository.create(label, amount*-1, description);
-                        if (!success) {
-                            Toast.makeText(AddTransactionActivity.this, "Failed to create new transactions", Toast.LENGTH_SHORT).show();
-                        }
-                        finish();
-
-                    });
-                }
-                else  if (checkedId == R.id.radioButtonIncome) {
-                    addTransactionBtn.setOnClickListener(view -> {
-                        double amount = Double.parseDouble(amountInput.getText().toString().isEmpty() ? "0" :amountInput.getText().toString());
-                        String label = labelInput.getText().toString();
-                        String description = descriptionInput.getText().toString();
-
-                        if (label.isEmpty())
-                            labelLayout.setError("Please enter a valid label");
-                        if (amount == 0)
-                            amountLayout.setError("Please enter a valid amount");
+                    if (label.isEmpty())
+                        labelLayout.setError("Please enter a valid label");
+                    if (amount == 0)
+                        amountLayout.setError("Please enter a valid amount");
 
                         Repository transactionsRepository = new TransactionRepository(AddTransactionActivity.this);
-                        boolean success = transactionsRepository.create(label, amount, description);
+
+                        if (checkedId == R.id.radioButtonExpense) {
+                            success = transactionsRepository.create(label, amount * -1, description);
+                        }
+                        else if (checkedId == R.id.radioButtonIncome) {
+                            success = transactionsRepository.create(label, amount, description);
+                        }
                         if (!success) {
-                            Toast.makeText(AddTransactionActivity.this, "Failed to create new transactions", Toast.LENGTH_SHORT).show();
+                             Toast.makeText(AddTransactionActivity.this, "Failed to create new transactions", Toast.LENGTH_SHORT).show();
                         }
                         finish();
-
-                    });
-                }
+                });
             }
         });
         

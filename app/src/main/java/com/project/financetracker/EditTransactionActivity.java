@@ -12,19 +12,44 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.project.financetracker.model.TransactionModel;
 import com.project.financetracker.repository.Repository;
 import com.project.financetracker.repository.TransactionRepository;
 
+import java.util.Date;
+
 public class EditTransactionActivity extends AppCompatActivity{
 
+    TransactionRepository databaseHelper;
+    TransactionModel model;
+    private String selectedLabel;
+    private Double selectedAmount;
+    private String selectedDescription;
+    private int selectedId;
+    private Date selectedCreatedDate;
+    private TextView transaction_label;
+    private TextView transaction_amount;
+    private TextView transaction_description;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_transaction);
+
+        selectedId = getIntent().getIntExtra("id", -1);
+        selectedLabel = getIntent().getStringExtra("label");
+        selectedAmount = getIntent().getDoubleExtra("amount", -1);
+        selectedDescription = getIntent().getStringExtra("description");
+        selectedCreatedDate = (Date)getIntent().getSerializableExtra("createdAt");
+
+        databaseHelper = new TransactionRepository(this);
 
         TextInputEditText labelInput = (TextInputEditText) findViewById(R.id.labelInput);
         TextInputEditText amountInput = (TextInputEditText) findViewById(R.id.amountInput);
@@ -33,38 +58,50 @@ public class EditTransactionActivity extends AppCompatActivity{
         TextInputLayout amountLayout = (TextInputLayout) findViewById(R.id.amountLayout);
         TextInputLayout descriptionLayout = (TextInputLayout) findViewById(R.id.descriptionLayout);
 
+        transaction_label = (TextView)findViewById(R.id.transaction_label);
+        transaction_amount = (TextView)findViewById(R.id.transaction_amount);
+        transaction_description = (TextView)findViewById(R.id.transaction_description);
+
+        setText();
+
         Button addTransactionBtn = (Button) findViewById(R.id.addTransactionButton);
+        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+        radioGroup.clearCheck();
+        RadioButton radioButtonExpense = (RadioButton) findViewById(R.id.radioButtonExpense);
 
-        labelInput.addTextChangedListener(new TextWatcher() {
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                addTransactionBtn.setOnClickListener(view -> {
+                    double amount = Double.parseDouble(amountInput.getText().toString().isEmpty() ? "0" : amountInput.getText().toString());
+                    String label = labelInput.getText().toString();
+                    String description = descriptionInput.getText().toString();
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.length() > 0)
-                    labelLayout.setError(null);
+                    if (label.isEmpty())
+                        labelLayout.setError("Please enter a valid label");
+                    if (amount == 0)
+                        amountLayout.setError("Please enter a valid amount");
+
+                    if (checkedId == R.id.radioButtonExpense) {
+                        model = new TransactionModel(selectedId, label, amount*-1, description, selectedCreatedDate);
+                    }
+                    else if (checkedId != R.id.radioButtonExpense) {
+                        model = new TransactionModel(selectedId, label, amount, description, selectedCreatedDate);
+                    }
+
+                    databaseHelper.update(selectedId, model);
+                    finish();
+                });
             }
-
-            @Override
-            public void afterTextChanged(Editable editable) { }
-        });
-
-        amountInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if(charSequence.length() > 0)
-                    amountLayout.setError(null);
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) { }
         });
 
         ImageButton closeBtn = (ImageButton) findViewById(R.id.closeButton);
-
         closeBtn.setOnClickListener(view -> finish());
+    }
+
+    public void setText() {
+        transaction_label.setText(selectedLabel);
+        transaction_amount.setText(String.valueOf(selectedAmount));
+        transaction_description.setText(selectedDescription);
     }
 }
