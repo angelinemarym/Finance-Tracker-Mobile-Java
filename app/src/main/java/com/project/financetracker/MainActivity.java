@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
     private Calendar now = Calendar.getInstance();
     private Date startDate = null, endDate = null;
+    private String dateRange = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         RecyclerView recyclerView = findViewById(R.id.transactions_recyclerview);
+        TextView transactionDateRange = findViewById(R.id.transactions_dateRange);
 
         builder.setSelection(new androidx.core.util.Pair<>(now.getTimeInMillis(), now.getTimeInMillis()));
         MaterialDatePicker<Pair<Long, Long>> picker = builder.build();
@@ -65,8 +67,10 @@ public class MainActivity extends AppCompatActivity {
         try {
             if(startDate != null && endDate != null){
                 transactionModels = repository.getByDateRange(startDate, endDate);
+                transactionDateRange.setText(dateRange);
             } else{
                 transactionModels = repository.getAll(0, 10);
+                transactionDateRange.setText("All");
             }
 
             transactionAdapter = new TransactionAdapter(transactionModels);
@@ -88,8 +92,10 @@ public class MainActivity extends AppCompatActivity {
                             List<TransactionModel> newData;
                             if(startDate != null && endDate != null){
                                 newData = repository.getByDateRange(startDate, endDate);
+                                transactionDateRange.setText(dateRange);
                             } else{
                                 newData = repository.getAll(transactionModels.get(lastIndex).getId(), 10);
+                                transactionDateRange.setText("All");
                             }
                             transactionModels.addAll(newData);
 
@@ -122,9 +128,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onPositiveButtonClick(Object selection) {
                         startDate = new Date(picker.getSelection().first);
                         endDate = new Date(picker.getSelection().second);
+                        dateRange = picker.getHeaderText();
                         loadMainPage();
-//                        Log.i("Selected Date is : " , picker.getSelection().first.toString());
-//                        Log.i("Selected Date is : " , picker.getSelection().second.toString());
                     }
                 });
 

@@ -100,7 +100,34 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingRight="16dp">
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/gray1"
+                android:paddingVertical="10dp"
+                android:paddingHorizontal="16dp">
+                <TextView
+                    android:id="@+id/transactions_dateRange"
+                    android:layout_below="@+id/balance_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="All"
+                    android:textStyle="bold"
+                    android:textSize="14sp"
+                    android:layout_weight="1"
+                    android:background="@color/white"
+                    android:layout_marginEnd="16dp"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="5dp" />
+                <ImageButton
+                    android:id="@+id/filter_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_filter"
+                    android:background="@color/gray1"/>
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/transactions_title"
                 android:layout_below="@+id/balance_layout"
@@ -112,13 +139,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_weight="1"/>
-            <ImageButton
-                android:id="@+id/filter_btn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_filter" />
         </LinearLayout>
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/transactions_recyclerview"
             android:layout_width="match_parent"
