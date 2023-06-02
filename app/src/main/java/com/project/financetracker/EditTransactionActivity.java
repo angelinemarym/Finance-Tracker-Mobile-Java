@@ -34,9 +34,9 @@ public class EditTransactionActivity extends AppCompatActivity{
     private String selectedDescription;
     private int selectedId;
     private Date selectedCreatedDate;
-    private TextView transaction_label;
-    private TextView transaction_amount;
-    private TextView transaction_description;
+    private TextInputEditText labelInput;
+    private TextInputEditText amountInput;
+    private TextInputEditText descriptionInput;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -51,16 +51,12 @@ public class EditTransactionActivity extends AppCompatActivity{
 
         databaseHelper = new TransactionRepository(this);
 
-        TextInputEditText labelInput = (TextInputEditText) findViewById(R.id.labelInput);
-        TextInputEditText amountInput = (TextInputEditText) findViewById(R.id.amountInput);
-        TextInputEditText descriptionInput = (TextInputEditText) findViewById(R.id.descriptionInput);
+        labelInput = (TextInputEditText) findViewById(R.id.labelInput);
+        amountInput = (TextInputEditText) findViewById(R.id.amountInput);
+        descriptionInput = (TextInputEditText) findViewById(R.id.descriptionInput);
         TextInputLayout labelLayout = (TextInputLayout) findViewById(R.id.labelLayout);
         TextInputLayout amountLayout = (TextInputLayout) findViewById(R.id.amountLayout);
         TextInputLayout descriptionLayout = (TextInputLayout) findViewById(R.id.descriptionLayout);
-
-        transaction_label = (TextView)findViewById(R.id.transaction_label);
-        transaction_amount = (TextView)findViewById(R.id.transaction_amount);
-        transaction_description = (TextView)findViewById(R.id.transaction_description);
 
         setText();
 
@@ -100,8 +96,9 @@ public class EditTransactionActivity extends AppCompatActivity{
     }
 
     public void setText() {
-        transaction_label.setText(selectedLabel);
-        transaction_amount.setText(String.valueOf(selectedAmount));
-        transaction_description.setText(selectedDescription);
+        labelInput.setText(selectedLabel);
+        if (selectedAmount < 0) {selectedAmount*=-1;}
+        amountInput.setText(String.valueOf(selectedAmount));
+        descriptionInput.setText(selectedDescription);
     }
 }
