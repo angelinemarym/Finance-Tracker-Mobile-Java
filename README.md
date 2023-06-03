@@ -1,8 +1,11 @@
-<h1>Finance Tracker Mobile in Java</h1>
-<p>This project showcases a simple finance tracker application made with Java programming language. This app helps you to manage your personal finances. It keeps track on your expense and income. In this app, we implemented Create-Read-Update-Delete (CRUD) concept. Several features that you can experience are:</p>
+# Finance Tracker Mobile in Java 💶
+This project showcases a simple finance tracker application made with Java programming language. This app helps you to manage your personal finances. It keeps track on your expense and income. In this app, we implemented Create-Read-Update-Delete (CRUD) concept. Several features that you can experience are:
 <ul>
   <li><b>Create transaction</b><br/>You can add new transaction (income/expense) by clicking the plus button on the bottom right corner. Then, the "add transaction" page will be opened. In this page, you should provide the label, amount, and category of the transaction. The description is an optional part. After all required fields are filled, the transaction will be shown on the list at the homepage.</li>
   <li><b>Read transaction (filter by selected date range)</b><br />All transactions can be viewed on the homepage. The header of the homepage is the dashboard that shows the current balance, total income, and total expense. In addition, you may view some transactions from specific range of date through the filter below the dashboard. If the filter icon is clicked, it will open a calendar page. In this page, you can pick the desired start date and end date. After you click save, transactions within the date range will be shown on the transaction list.</li>
   <li><b>Update transaction</b><br />This feature enables you to modify a transaction after it has been created. Fields such as label, amount, description, and category, can be easily modified by clicking on the transaction item from the list. The "Edit Transaction" page will be shown and you may edit the value on each field, then click the button on the bottom to save the updated data.</li>
   <li><b>Delete transaction</b><br />Deleting a transaction can be easily done by swiping the transaction item to the right.</li>
-<ul>
+</ul>
+
+## Platforms and Libraries
+Since this is an Android application, we used [`Android Studio`](https://developer.android.com/studio?gclid=CjwKCAjwpuajBhBpEiwA_ZtfheMV-FhB4RZOHrGrzi_mPgiUudqZsvKb98tI1N4DSrbsDh1-oJeqNRoC94wQAvD_BwE&gclsrc=aw.ds) as the main platform to integrate the frontend and backend of our application. To create the user interface, `.xml` files are created for each activity (page). Besides using several built-in libraries, [`Material.io`](https://m3.material.io/) library is also implemented to create some components in this app, such as dashboard cards, add button, etc. Specifically, the library version that we imported in `build.gradle` file is `com.google.android.material:material:1.4.0-alpha02`.
