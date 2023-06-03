@@ -6,7 +6,7 @@ This project showcases a simple finance tracker application made with Java progr
 * *Delete transaction*<br />Deleting a transaction can be easily done by swiping the transaction item to the right.
 
 ## Platforms and Libraries
-Since this is an Android application, we used [`Android Studio`](https://developer.android.com/studio?gclid=CjwKCAjwpuajBhBpEiwA_ZtfheMV-FhB4RZOHrGrzi_mPgiUudqZsvKb98tI1N4DSrbsDh1-oJeqNRoC94wQAvD_BwE&gclsrc=aw.ds) as the main platform to integrate the frontend and backend of our application. To create the user interface, `.xml` files are created for each activity (page). Besides using several built-in libraries, [`Material.io`](https://m3.material.io/) library is also implemented to create some components in this app, such as dashboard cards, add button, etc. Specifically, the library version that we imported in `build.gradle` file is `com.google.android.material:material:1.4.0-alpha02`.
+Since this is an Android application, we used [`Android Studio`](https://developer.android.com/studio?gclid=CjwKCAjwpuajBhBpEiwA_ZtfheMV-FhB4RZOHrGrzi_mPgiUudqZsvKb98tI1N4DSrbsDh1-oJeqNRoC94wQAvD_BwE&gclsrc=aw.ds) as the main platform to integrate the frontend and backend of our application. To create the user interface, `.xml` files are created for each activity (page). Besides using several built-in libraries, [`Material.io`](https://m3.material.io/) library is also implemented to create some components in this app, such as dashboard cards, add button, etc. Specifically, the library version that we imported in `build.gradle` file is `com.google.android.material:material:1.4.0-alpha02`. This program  also use SQLite database to store the transactions
 
 ## How to Run the Application
 ### Run the application locally
