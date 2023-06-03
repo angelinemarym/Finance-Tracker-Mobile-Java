@@ -58,39 +58,42 @@ public class EditTransactionActivity extends AppCompatActivity{
         TextInputLayout amountLayout = (TextInputLayout) findViewById(R.id.amountLayout);
         TextInputLayout descriptionLayout = (TextInputLayout) findViewById(R.id.descriptionLayout);
 
-        setText();
-
         Button addTransactionBtn = (Button) findViewById(R.id.addTransactionButton);
         RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
-        radioGroup.clearCheck();
         RadioButton radioButtonExpense = (RadioButton) findViewById(R.id.radioButtonExpense);
+        RadioButton radioButtonIncome = (RadioButton) findViewById(R.id.radioButtonIncome);
 
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                addTransactionBtn.setOnClickListener(view -> {
-                    double amount = Double.parseDouble(amountInput.getText().toString().isEmpty() ? "0" : amountInput.getText().toString());
-                    String label = labelInput.getText().toString();
-                    String description = descriptionInput.getText().toString();
+        if(selectedAmount < 0){
+            radioButtonExpense.setChecked(true);
+        }
+        else if(selectedAmount > 0){
+            radioButtonIncome.setChecked(true);
+        }
+        else {
+            radioGroup.clearCheck();
+        }
 
-                    if (label.isEmpty())
-                        labelLayout.setError("Please enter a valid label");
-                    if (amount == 0)
-                        amountLayout.setError("Please enter a valid amount");
+        setText();
 
-                    if (checkedId == R.id.radioButtonExpense) {
-                        model = new TransactionModel(selectedId, label, amount*-1, description, selectedCreatedDate);
-                    }
-                    else if (checkedId != R.id.radioButtonExpense) {
-                        model = new TransactionModel(selectedId, label, amount, description, selectedCreatedDate);
-                    }
+        addTransactionBtn.setOnClickListener(view -> {
+            double amount = Double.parseDouble(amountInput.getText().toString().isEmpty() ? "0" : amountInput.getText().toString());
+            String label = labelInput.getText().toString();
+            String description = descriptionInput.getText().toString();
 
-                    databaseHelper.update(selectedId, model);
-                    finish();
-                });
+            if (label.isEmpty())
+                labelLayout.setError("Please enter a valid label");
+            if (amount == 0)
+                amountLayout.setError("Please enter a valid amount");
+
+            if (radioButtonExpense.isChecked()) {
+                model = new TransactionModel(selectedId, label, amount * -1, description, selectedCreatedDate);
+            } else if (radioButtonIncome.isChecked()) {
+                model = new TransactionModel(selectedId, label, amount, description, selectedCreatedDate);
             }
-        });
 
+            databaseHelper.update(selectedId, model);
+            finish();
+        });
         ImageButton closeBtn = (ImageButton) findViewById(R.id.closeButton);
         closeBtn.setOnClickListener(view -> finish());
     }

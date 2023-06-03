@@ -65,7 +65,7 @@ public class AddTransactionActivity extends AppCompatActivity {
 
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
+            public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
 
                 addTransactionBtn.setOnClickListener(view -> {
                     boolean success = false;
