@@ -95,7 +95,8 @@
         android:id="@+id/radioGroup"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingHorizontal="16dp">
 
         <RadioButton
             android:id="@+id/radioButtonIncome"
