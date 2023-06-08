@@ -23,7 +23,9 @@ import com.project.financetracker.model.TransactionModel;
 import com.project.financetracker.repository.Repository;
 import com.project.financetracker.repository.TransactionRepository;
 
+import java.text.NumberFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class EditTransactionActivity extends AppCompatActivity{
 
@@ -101,7 +103,9 @@ public class EditTransactionActivity extends AppCompatActivity{
     public void setText() {
         labelInput.setText(selectedLabel);
         if (selectedAmount < 0) {selectedAmount*=-1;}
-        amountInput.setText(String.valueOf(selectedAmount));
+        NumberFormat nf = NumberFormat.getInstance(new Locale("da", "DK"));
+        String selectedAmountStr = nf.format(selectedAmount);
+        amountInput.setText(selectedAmountStr);
         descriptionInput.setText(selectedDescription);
     }
 }

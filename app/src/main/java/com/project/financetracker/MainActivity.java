@@ -33,6 +33,8 @@ import java.util.Calendar;
 import java.sql.Date;
 import java.util.List;
 import java.util.Locale;
+import java.text.NumberFormat;
+
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewInterface {
     private final Repository repository = new TransactionRepository(MainActivity.this);
@@ -165,9 +167,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         TextView income = findViewById(R.id.income);
         TextView expense = findViewById(R.id.expense);
 
-        balance.setText(String.format(Locale.ENGLISH, "Rp %.0f", repository.getBalance()));
-        income.setText(String.format(Locale.ENGLISH, "Rp %.0f", repository.getIncome()));
-        expense.setText(String.format(Locale.ENGLISH, "Rp %.0f", repository.getExpense()));
+        NumberFormat nf = NumberFormat.getInstance(new Locale("da", "DK"));
+        String balanceStr = nf.format(repository.getBalance());
+        String incomeStr = nf.format(repository.getIncome());
+        String expenseStr = nf.format(repository.getExpense());
+
+        balance.setText("Rp" + balanceStr);
+        income.setText("Rp" + incomeStr);
+        expense.setText("Rp" + expenseStr);
     }
 
     @Override

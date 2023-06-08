@@ -8,9 +8,6 @@
     android:layout_height="match_parent"
     >
 <RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
@@ -25,22 +22,25 @@
             android:orientation="vertical"
             android:background="@color/blue1"
             android:padding="16dp">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/black_ops_one"
                 android:text="Total Balance"
-                android:textStyle="bold"
+                android:textColor="@color/white"
                 android:textSize="20sp"
-                android:textColor="@color/white"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/balance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/archivo_black"
                 android:text="Rp20.000.000"
+                android:textColor="@color/white"
                 android:textSize="32sp"
-                android:textStyle="bold"
-                android:textColor="@color/white" />
+                android:textStyle="bold" />
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/dashboard"
@@ -59,17 +59,21 @@
                         android:orientation="vertical"
                         android:layout_weight="0.5"
                         android:gravity="center">
+
                         <TextView
                             android:id="@+id/income"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/archivo"
                             android:text="Rp15.000.000"
-                            android:textStyle="bold"
+                            android:textColor="@color/green1"
                             android:textSize="24sp"
-                            android:textColor="@color/green1"/>
+                            android:textStyle="bold" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/archivo_black"
                             android:text="Income"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -80,17 +84,21 @@
                         android:orientation="vertical"
                         android:layout_weight="0.5"
                         android:gravity="center">
+
                         <TextView
                             android:id="@+id/expense"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/archivo"
                             android:text="Rp5.000.000"
-                            android:textStyle="bold"
+                            android:textColor="@color/orange1"
                             android:textSize="24sp"
-                            android:textColor="@color/orange1"/>
+                            android:textStyle="bold" />
+
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:fontFamily="@font/archivo_black"
                             android:text="Expense"
                             android:textSize="14sp" />
                     </LinearLayout>
@@ -107,19 +115,21 @@
                 android:background="@color/gray1"
                 android:paddingVertical="10dp"
                 android:paddingHorizontal="16dp">
+
                 <TextView
                     android:id="@+id/transactions_dateRange"
-                    android:layout_below="@+id/balance_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="All"
-                    android:textStyle="bold"
-                    android:textSize="14sp"
+                    android:layout_below="@+id/balance_layout"
+                    android:layout_marginEnd="16dp"
                     android:layout_weight="1"
                     android:background="@color/white"
-                    android:layout_marginEnd="16dp"
+                    android:fontFamily="@font/archivo_narrow"
                     android:paddingHorizontal="10dp"
-                    android:paddingVertical="5dp" />
+                    android:paddingVertical="5dp"
+                    android:text="All"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
                 <ImageButton
                     android:id="@+id/filter_btn"
                     android:layout_width="wrap_content"
@@ -130,15 +140,16 @@
 
             <TextView
                 android:id="@+id/transactions_title"
-                android:layout_below="@+id/balance_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Transactions"
-                android:textStyle="bold"
-                android:textSize="14sp"
-                android:layout_marginTop="16dp"
+                android:layout_below="@+id/balance_layout"
                 android:layout_marginStart="16dp"
-                android:layout_weight="1"/>
+                android:layout_marginTop="16dp"
+                android:layout_weight="1"
+                android:fontFamily="@font/archivo_narrow"
+                android:text="Transactions"
+                android:textSize="14sp"
+                android:textStyle="bold" />
         </LinearLayout>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/transactions_recyclerview"

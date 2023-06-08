@@ -14,6 +14,7 @@ import com.project.financetracker.R;
 import com.project.financetracker.RecyclerViewInterface;
 import com.project.financetracker.model.TransactionModel;
 
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.Locale;
 
@@ -68,11 +69,15 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         TransactionModel transactionModel = transactionModels.get(position);
         Context context = holder.amount.getContext();
 
+        NumberFormat nf = NumberFormat.getInstance(new Locale("da", "DK"));
+        String amountStr = nf.format(transactionModel.getAmount());
+        String amountStr2 = nf.format(Math.abs(transactionModel.getAmount()));
+
         if (transactionModel.getAmount() >= 0) {
-            holder.amount.setText(String.format(Locale.ENGLISH, "+ Rp%.0f", transactionModel.getAmount()));
+            holder.amount.setText("Rp" + amountStr);
             holder.amount.setTextColor(ContextCompat.getColor(context, R.color.green1));
         } else {
-            holder.amount.setText(String.format(Locale.ENGLISH, "- Rp%.0f", Math.abs(transactionModel.getAmount())));
+            holder.amount.setText("Rp" + amountStr2);
             holder.amount.setTextColor(ContextCompat.getColor(context, R.color.orange1));
         }
 
