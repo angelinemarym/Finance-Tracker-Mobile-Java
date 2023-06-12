@@ -105,7 +105,7 @@ public class EditTransactionActivity extends AppCompatActivity{
         if (selectedAmount < 0) {selectedAmount*=-1;}
         NumberFormat nf = NumberFormat.getInstance(new Locale("da", "DK"));
         String selectedAmountStr = nf.format(selectedAmount);
-        amountInput.setText(selectedAmountStr);
+        amountInput.setText(String.format(Locale.ENGLISH, "%.0f", selectedAmount));
         descriptionInput.setText(selectedDescription);
     }
 }
