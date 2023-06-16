@@ -1,5 +1,6 @@
 package com.project.financetracker;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -9,6 +10,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -18,6 +20,8 @@ import com.project.financetracker.repository.ExpenseRepository;
 import com.project.financetracker.repository.IExpenseRepository;
 import com.project.financetracker.repository.ITransactionRepository;
 import com.project.financetracker.repository.TransactionRepository;
+
+import java.sql.Date;
 
 public class AddTransactionActivity extends AppCompatActivity {
     @Override
@@ -36,6 +40,7 @@ public class AddTransactionActivity extends AppCompatActivity {
         RadioButton radioButtonExpense = (RadioButton) findViewById(R.id.radioButtonExpense);
 
         Button addTransactionBtn = (Button) findViewById(R.id.addTransactionButton);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
         labelInput.addTextChangedListener(new TextWatcher() {
             @Override
@@ -70,7 +75,7 @@ public class AddTransactionActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup radioGroup, int checkedId) {
 
                 addTransactionBtn.setOnClickListener(view -> {
-                    boolean success = false;
+                    final boolean[] success = {false};
                     double amount = Double.parseDouble(amountInput.getText().toString().isEmpty() ? "0" :amountInput.getText().toString());
                     String label = labelInput.getText().toString();
                     String description = descriptionInput.getText().toString();
@@ -80,20 +85,50 @@ public class AddTransactionActivity extends AppCompatActivity {
                     if (amount == 0)
                         amountLayout.setError("Please enter a valid amount");
 
-                        ITransactionRepository transactionRepository = new TransactionRepository(AddTransactionActivity.this, Constant.DB_NAME, null, Constant.VERSION);
-                        IExpenseRepository expenseRepository = new ExpenseRepository(AddTransactionActivity.this, Constant.DB_NAME, null, Constant.VERSION);
+                    ITransactionRepository transactionRepository = new TransactionRepository(AddTransactionActivity.this, Constant.DB_NAME, null, Constant.VERSION);
+                    IExpenseRepository expenseRepository = new ExpenseRepository(AddTransactionActivity.this, Constant.DB_NAME, null, Constant.VERSION);
 
-                        if (checkedId == R.id.radioButtonExpense) {
-//                            TODO: add expense limit validation here
-                            success = transactionRepository.create(label, amount * -1, description);
+                    if (checkedId == R.id.radioButtonExpense) {
+//                      TODO: add expense limit validation here
+                        java.util.Date today = new java.util.Date();
+                        Date currDate = new Date(today.getTime());
+                        double todayExpense = transactionRepository.getExpenseByDate(currDate);
+                        double todayExpenseLimit;
+                        try{
+                            todayExpenseLimit = expenseRepository.getExpenseLimit();
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
                         }
-                        else if (checkedId == R.id.radioButtonIncome) {
-                            success = transactionRepository.create(label, amount, description);
+
+                        if(todayExpense > todayExpenseLimit){
+                            builder.setTitle("You have reached your expense limit!")
+                                    .setMessage("Do you want to add the item anyway?")
+                                    .setCancelable(true)
+                                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.cancel();
+                                        }
+                                    })
+                                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            success[0] = transactionRepository.create(label, amount * -1, description);
+                                            finish();
+                                        }
+                                    })
+                                    .show();
+                        } else {
+                            success[0] = transactionRepository.create(label, amount * -1, description);
                         }
-                        if (!success) {
-                             Toast.makeText(AddTransactionActivity.this, "Failed to create new transactions", Toast.LENGTH_SHORT).show();
-                        }
-                        finish();
+                    }
+                    else if (checkedId == R.id.radioButtonIncome) {
+                        success[0] = transactionRepository.create(label, amount, description);
+                    }
+                    if (!success[0]) {
+                        Toast.makeText(AddTransactionActivity.this, "Failed to create new transactions", Toast.LENGTH_SHORT).show();
+                    }
+                    finish();
                 });
             }
         });
