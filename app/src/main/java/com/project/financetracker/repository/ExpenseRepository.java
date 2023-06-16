@@ -16,16 +16,6 @@ public class ExpenseRepository extends DBHelper implements IExpenseRepository {
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db) {
-        String createTableStatement = "CREATE TABLE " + TABLE_NAME + " (expenseLimit REAL DEFAULT 0)";
-        db.execSQL(createTableStatement);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-    }
-
-    @Override
     public double setExpenseLimit(double expenseLimit) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
