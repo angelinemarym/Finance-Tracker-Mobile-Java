@@ -9,31 +9,20 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.project.financetracker.helper.DBHelper;
 import com.project.financetracker.model.TransactionModel;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.util.List;
 import java.util.Locale;
 
 
-public class TransactionRepository extends SQLiteOpenHelper implements Repository {
+public class TransactionRepository extends DBHelper implements ITransactionRepository {
     private static final String TABLE_NAME = "transactions";
-    public TransactionRepository(@Nullable Context context) {
-        super(context, "transaction.db", null, 1);
-    }
-
-    @Override
-    public void onCreate(SQLiteDatabase db) {
-        String createTableStatement = "CREATE TABLE " + TABLE_NAME + " (id INTEGER PRIMARY KEY AUTOINCREMENT, label VARCHAR(255) NOT NULL, amount REAL NOT NULL DEFAULT 0, description TEXT, createdAt DATE DEFAULT CURRENT_DATE)";
-        db.execSQL(createTableStatement);
-    }
-
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public TransactionRepository(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version) {
+        super(context, name, factory, version);
     }
 
     @Override
@@ -170,6 +159,22 @@ public class TransactionRepository extends SQLiteOpenHelper implements Repositor
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.rawQuery("SELECT SUM(amount) AS amount FROM " + TABLE_NAME + " WHERE amount < 0", null);
+        if (cursor.moveToFirst()) {
+            double amount = cursor.getDouble(0);
+            cursor.close();
+
+            return amount;
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    public double getExpenseByDate(Date date) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String stmt = "SELECT SUM(amount) AS amount FROM " + TABLE_NAME + " WHERE amount < 0 AND createdAt = " + date;
+
+        Cursor cursor = db.rawQuery(stmt, null);
         if (cursor.moveToFirst()) {
             double amount = cursor.getDouble(0);
             cursor.close();

@@ -3,7 +3,6 @@ package com.project.financetracker;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
@@ -14,7 +13,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.project.financetracker.repository.Repository;
+import com.project.financetracker.constants.Constant;
+import com.project.financetracker.repository.ExpenseRepository;
+import com.project.financetracker.repository.IExpenseRepository;
+import com.project.financetracker.repository.ITransactionRepository;
 import com.project.financetracker.repository.TransactionRepository;
 
 public class AddTransactionActivity extends AppCompatActivity {
@@ -78,13 +80,15 @@ public class AddTransactionActivity extends AppCompatActivity {
                     if (amount == 0)
                         amountLayout.setError("Please enter a valid amount");
 
-                        Repository transactionsRepository = new TransactionRepository(AddTransactionActivity.this);
+                        ITransactionRepository transactionRepository = new TransactionRepository(AddTransactionActivity.this, Constant.DB_NAME, null, Constant.VERSION);
+                        IExpenseRepository expenseRepository = new ExpenseRepository(AddTransactionActivity.this, Constant.DB_NAME, null, Constant.VERSION);
 
                         if (checkedId == R.id.radioButtonExpense) {
-                            success = transactionsRepository.create(label, amount * -1, description);
+//                            TODO: add expense limit validation here
+                            success = transactionRepository.create(label, amount * -1, description);
                         }
                         else if (checkedId == R.id.radioButtonIncome) {
-                            success = transactionsRepository.create(label, amount, description);
+                            success = transactionRepository.create(label, amount, description);
                         }
                         if (!success) {
                              Toast.makeText(AddTransactionActivity.this, "Failed to create new transactions", Toast.LENGTH_SHORT).show();

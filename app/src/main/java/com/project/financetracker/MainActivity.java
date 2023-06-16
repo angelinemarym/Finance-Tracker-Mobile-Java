@@ -12,10 +12,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Editable;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -26,12 +25,14 @@ import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClic
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.project.financetracker.adapter.TransactionAdapter;
+import com.project.financetracker.constants.Constant;
 import com.project.financetracker.model.TransactionModel;
-import com.project.financetracker.repository.Repository;
+import com.project.financetracker.repository.ExpenseRepository;
+import com.project.financetracker.repository.IExpenseRepository;
+import com.project.financetracker.repository.ITransactionRepository;
 import com.project.financetracker.repository.TransactionRepository;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.sql.Date;
 import java.util.List;
@@ -40,12 +41,12 @@ import java.text.NumberFormat;
 
 
 public class MainActivity extends AppCompatActivity implements RecyclerViewInterface {
-    private final Repository repository = new TransactionRepository(MainActivity.this);
+    private final ITransactionRepository transactionRepository = new TransactionRepository(MainActivity.this, Constant.DB_NAME, null, Constant.VERSION);
+    private final IExpenseRepository expenseRepository = new ExpenseRepository(MainActivity.this, Constant.DB_NAME, null, Constant.VERSION);
     private TransactionAdapter transactionAdapter;
-    private LinearLayoutManager linearLayoutManager;
     private List<TransactionModel> transactionModels;
     MaterialDatePicker.Builder<Pair<Long, Long>> builder = MaterialDatePicker.Builder.dateRangePicker();
-    private Calendar now = Calendar.getInstance();
+    private final Calendar now = Calendar.getInstance();
     private Date startDate = null, endDate = null;
     private String dateRange = null;
     private Button expenseLimitBtn;
@@ -74,10 +75,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
         try {
             if(startDate != null && endDate != null){
-                transactionModels = repository.getByDateRange(startDate, endDate);
+                transactionModels = transactionRepository.getByDateRange(startDate, endDate);
                 transactionDateRange.setText(dateRange);
             } else{
-                transactionModels = repository.getAll(0, 10);
+                transactionModels = transactionRepository.getAll(0, 10);
                 transactionDateRange.setText("All");
             }
 
@@ -99,10 +100,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 //                          TODO: Add pagination for getByDateRange function
                             List<TransactionModel> newData;
                             if(startDate != null && endDate != null){
-                                newData = repository.getByDateRange(startDate, endDate);
+                                newData = transactionRepository.getByDateRange(startDate, endDate);
                                 transactionDateRange.setText(dateRange);
                             } else{
-                                newData = repository.getAll(transactionModels.get(lastIndex).getId(), 10);
+                                newData = transactionRepository.getAll(transactionModels.get(lastIndex).getId(), 10);
                                 transactionDateRange.setText("All");
                             }
                             transactionModels.addAll(newData);
@@ -142,17 +143,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                 });
 
         // Swipe to remove
-        linearLayoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager linearLayoutManager1 = new LinearLayoutManager(this);
         ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 return false;
             }
 
             @Override
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                Repository transactionsRepository = new TransactionRepository(MainActivity.this);
-                transactionsRepository.delete(transactionModels.get(viewHolder.getAdapterPosition()).getId());
+                transactionRepository.delete(transactionModels.get(viewHolder.getAdapterPosition()).getId());
                 showSnackbar();
                 updateDashboard();
             }
@@ -171,10 +171,16 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         // TODO: save the expense limit to DB and add alert when the daily expense has exceeded the limit.
         submitExpenseLimit.setOnClickListener(new View.OnClickListener() {
 
-            NumberFormat nf = NumberFormat.getInstance(new Locale("da", "DK"));
+            final NumberFormat numberFormat = NumberFormat.getInstance(new Locale("da", "DK"));
             @Override
             public void onClick(View v) {
-                expenseLimitBtn.setText("Expense limit: " + nf.format(Integer.parseInt(expenseLimit.getText().toString())));
+                Editable expenseLimitValue = expenseLimit.getText();
+                if (expenseLimitValue == null) {
+                    dialog.dismiss();
+                } else {
+                    expenseRepository.setExpenseLimit(Double.parseDouble(expenseLimitValue.toString()));
+                }
+                expenseLimitBtn.setText("Expense limit: " + numberFormat.format(Integer.parseInt(expenseLimitValue.toString())));
                 dialog.dismiss();
             }
         });
@@ -202,9 +208,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         TextView expense = findViewById(R.id.expense);
 
         NumberFormat nf = NumberFormat.getInstance(new Locale("da", "DK"));
-        String balanceStr = nf.format(repository.getBalance());
-        String incomeStr = nf.format(repository.getIncome());
-        String expenseStr = nf.format(repository.getExpense());
+        String balanceStr = nf.format(transactionRepository.getBalance());
+        String incomeStr = nf.format(transactionRepository.getIncome());
+        String expenseStr = nf.format(transactionRepository.getExpense());
 
         balance.setText("Rp" + balanceStr);
         income.setText("Rp" + incomeStr);

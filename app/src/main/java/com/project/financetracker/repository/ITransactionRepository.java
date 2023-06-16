@@ -6,7 +6,7 @@ import java.text.ParseException;
 import java.sql.Date;
 import java.util.List;
 
-public interface Repository {
+public interface ITransactionRepository {
     TransactionModel getById(int id) throws Exception;
     List<TransactionModel> getAll(int lastId, int limit) throws ParseException;
     List<TransactionModel> getByDateRange(Date start , Date end) throws ParseException;
@@ -16,4 +16,5 @@ public interface Repository {
     double getBalance();
     double getIncome();
     double getExpense();
+    double getExpenseByDate(Date date);
 }

@@ -1,26 +1,20 @@
 package com.project.financetracker;
 
-import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.project.financetracker.constants.Constant;
 import com.project.financetracker.model.TransactionModel;
-import com.project.financetracker.repository.Repository;
+import com.project.financetracker.repository.ITransactionRepository;
 import com.project.financetracker.repository.TransactionRepository;
 
 import java.text.NumberFormat;
@@ -29,7 +23,7 @@ import java.util.Locale;
 
 public class EditTransactionActivity extends AppCompatActivity{
 
-    TransactionRepository databaseHelper;
+    ITransactionRepository databaseHelper;
     TransactionModel model;
     private String selectedLabel;
     private Double selectedAmount;
@@ -51,7 +45,7 @@ public class EditTransactionActivity extends AppCompatActivity{
         selectedDescription = getIntent().getStringExtra("description");
         selectedCreatedDate = (Date)getIntent().getSerializableExtra("createdAt");
 
-        databaseHelper = new TransactionRepository(this);
+        databaseHelper = new TransactionRepository(this, Constant.DB_NAME, null, Constant.VERSION);
 
         labelInput = (TextInputEditText) findViewById(R.id.labelInput);
         amountInput = (TextInputEditText) findViewById(R.id.amountInput);
