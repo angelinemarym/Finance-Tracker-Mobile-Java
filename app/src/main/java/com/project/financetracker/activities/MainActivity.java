@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
     private String dateRange = null;
     private Button expenseLimitBtn;
     private AlertDialog dialog;
+    double todayExpenseLimit = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,12 +72,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
         RecyclerView recyclerView = findViewById(R.id.transactions_recyclerview);
         TextView transactionDateRange = findViewById(R.id.transactions_dateRange);
-        double todayExpenseLimit;
-        try{
-            todayExpenseLimit = expenseRepository.getExpenseLimit();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
 
         builder.setSelection(new androidx.core.util.Pair<>(now.getTimeInMillis(), now.getTimeInMillis()));
         MaterialDatePicker<Pair<Long, Long>> picker = builder.build();
@@ -193,6 +188,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                     dialog.dismiss();
                 } else {
                     expenseRepository.setExpenseLimit(Double.parseDouble(expenseLimitValue.toString()));
+                    todayExpenseLimit = Double.parseDouble(expenseLimitValue.toString());
                 }
                 expenseLimitBtn.setText("Expense limit: " + numberFormat.format(Integer.parseInt(expenseLimitValue.toString())));
                 dialog.dismiss();
