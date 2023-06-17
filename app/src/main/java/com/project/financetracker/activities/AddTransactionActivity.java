@@ -108,7 +108,7 @@ public class AddTransactionActivity extends AppCompatActivity {
                     throw new RuntimeException(e);
                 }
 
-                if(todayExpense * -1 + amount > todayExpenseLimit){
+                if(todayExpenseLimit > 0 && todayExpense * -1 + amount > todayExpenseLimit){
                     alert.setTitle("You've reached the expense limit!");
                     alert.setMessage("Do you want to add this item anyway?");
                     alert.setPositiveButton("Yes", (dialog, which) -> {
