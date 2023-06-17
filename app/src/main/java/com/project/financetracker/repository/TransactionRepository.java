@@ -75,8 +75,8 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
     public List<TransactionModel> getByDateRange(Date start, Date end) throws ParseException {
         List<TransactionModel> models = new ArrayList<>();
 
-        String selectStatement = String.format(Locale.ENGLISH, "SELECT * FROM %s WHERE createdAt >= '?' AND createdAt <= '?'", TABLE_NAME);
-
+        String selectStatement = String.format(Locale.ENGLISH, "SELECT * FROM %s WHERE createdAt >= ? AND createdAt <= ?", TABLE_NAME);
+        System.out.println(selectStatement);
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.rawQuery(selectStatement, new String[]{start.toString(), end.toString()});
