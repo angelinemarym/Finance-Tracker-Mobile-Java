@@ -39,7 +39,13 @@ public class ExpenseRepository extends DBHelper implements IExpenseRepository {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_NAME, new String[]{"expenseLimit"}, null, null, null, null, null);
-        System.out.println(cursor.getCount());
+        if(cursor.getCount() <= 0) {
+            setExpenseLimit(limit);
+            cursor.close();
+
+            return 0;
+        }
+
         if(cursor.moveToNext()) {
             limit = cursor.getDouble(0);
         } else {
