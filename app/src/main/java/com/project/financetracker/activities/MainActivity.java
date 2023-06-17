@@ -13,6 +13,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -70,10 +71,22 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
         RecyclerView recyclerView = findViewById(R.id.transactions_recyclerview);
         TextView transactionDateRange = findViewById(R.id.transactions_dateRange);
+        double todayExpenseLimit;
+        try{
+            todayExpenseLimit = expenseRepository.getExpenseLimit();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         builder.setSelection(new androidx.core.util.Pair<>(now.getTimeInMillis(), now.getTimeInMillis()));
         MaterialDatePicker<Pair<Long, Long>> picker = builder.build();
         expenseLimitBtn = findViewById(R.id.expenseLimitBtn);
+
+        final NumberFormat numberFormat = NumberFormat.getInstance(new Locale("da", "DK"));
+        int expenseLimitTemp = (int) todayExpenseLimit;
+        if(todayExpenseLimit > 0){
+            expenseLimitBtn.setText("Expense limit: " + numberFormat.format(expenseLimitTemp));
+        }
 
         try {
             if(startDate != null && endDate != null){
@@ -170,7 +183,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         EditText expenseLimit = view.findViewById(R.id.expense_limit);
         Button submitExpenseLimit = view.findViewById(R.id.submit_expense_limit);
 
-        // TODO: save the expense limit to DB and add alert when the daily expense has exceeded the limit.
         submitExpenseLimit.setOnClickListener(new View.OnClickListener() {
 
             final NumberFormat numberFormat = NumberFormat.getInstance(new Locale("da", "DK"));
