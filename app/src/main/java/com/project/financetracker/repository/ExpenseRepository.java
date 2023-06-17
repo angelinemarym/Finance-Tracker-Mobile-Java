@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -19,25 +20,35 @@ public class ExpenseRepository extends DBHelper implements IExpenseRepository {
     public double setExpenseLimit(double expenseLimit) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
+        cv.put("id", 1);
         cv.put("expenseLimit", expenseLimit);
 
-        db.update(TABLE_NAME, cv, "", null);
+        long success = db.insert(TABLE_NAME, null, cv);
+        if(success == -1) {
+            cv.remove("id");
+            db.update(TABLE_NAME, cv, null, null);
+        }
 
         return expenseLimit;
     }
 
     @Override
     public double getExpenseLimit() throws Exception {
-        String selectStmt = "SELECT expenseLimit";
+        double limit = 0;
+//        String selectStmt = "SELECT * FROM expenseLimits LIMIT 1";
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery(selectStmt, null);
-        if(cursor.moveToFirst()) {
-            String dateTime = cursor.getString(4);
-            return cursor.getDouble(0);
+        Cursor cursor = db.query(TABLE_NAME, new String[]{"expenseLimit"}, null, null, null, null, null);
+        System.out.println(cursor.getCount());
+        if(cursor.moveToNext()) {
+            limit = cursor.getDouble(0);
         } else {
             cursor.close();
             throw new Exception();
         }
+
+        cursor.close();
+
+        return limit;
     }
 }

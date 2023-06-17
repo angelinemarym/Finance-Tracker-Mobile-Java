@@ -1,4 +1,4 @@
-package com.project.financetracker;
+package com.project.financetracker.activities;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.project.financetracker.R;
 import com.project.financetracker.constants.Constant;
 import com.project.financetracker.repository.ExpenseRepository;
 import com.project.financetracker.repository.IExpenseRepository;
@@ -96,11 +97,13 @@ public class AddTransactionActivity extends AppCompatActivity {
                         double todayExpenseLimit;
                         try{
                             todayExpenseLimit = expenseRepository.getExpenseLimit();
+                            System.out.println("expense limit: " + todayExpenseLimit);
+                            System.out.println("expense: " + todayExpense);
                         } catch (Exception e) {
                             throw new RuntimeException(e);
                         }
 
-                        if(todayExpense > todayExpenseLimit){
+                        if(todayExpense * -1 > todayExpenseLimit){
                             builder.setTitle("You have reached your expense limit!")
                                     .setMessage("Do you want to add the item anyway?")
                                     .setCancelable(true)

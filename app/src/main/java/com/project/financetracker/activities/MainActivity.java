@@ -1,4 +1,4 @@
-package com.project.financetracker;
+package com.project.financetracker.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -24,6 +24,8 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.project.financetracker.R;
+import com.project.financetracker.RecyclerViewInterface;
 import com.project.financetracker.adapter.TransactionAdapter;
 import com.project.financetracker.constants.Constant;
 import com.project.financetracker.model.TransactionModel;

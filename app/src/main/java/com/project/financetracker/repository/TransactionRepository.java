@@ -75,11 +75,11 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
     public List<TransactionModel> getByDateRange(Date start, Date end) throws ParseException {
         List<TransactionModel> models = new ArrayList<>();
 
-        String selectStatement = String.format(Locale.ENGLISH, "SELECT * FROM %s WHERE createdAt >= '%s' AND createdAt <= '%s'", TABLE_NAME, start.toString(), end.toString());
+        String selectStatement = String.format(Locale.ENGLISH, "SELECT * FROM %s WHERE createdAt >= '?' AND createdAt <= '?'", TABLE_NAME);
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery(selectStatement, null);
+        Cursor cursor = db.rawQuery(selectStatement, new String[]{start.toString(), end.toString()});
         if (cursor.moveToFirst()) {
             do {
                 models.add(new TransactionModel(
@@ -172,9 +172,9 @@ public class TransactionRepository extends DBHelper implements ITransactionRepos
     @Override
     public double getExpenseByDate(Date date) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String stmt = "SELECT SUM(amount) AS amount FROM " + TABLE_NAME + " WHERE amount < 0 AND createdAt = " + date;
+        String stmt = "SELECT SUM(amount) AS amount FROM " + TABLE_NAME + " WHERE amount < 0 AND createdAt = ?";
 
-        Cursor cursor = db.rawQuery(stmt, null);
+        Cursor cursor = db.rawQuery(stmt, new String[]{date.toString()});
         if (cursor.moveToFirst()) {
             double amount = cursor.getDouble(0);
             cursor.close();

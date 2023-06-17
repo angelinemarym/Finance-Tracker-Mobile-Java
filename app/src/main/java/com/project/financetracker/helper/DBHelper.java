@@ -16,7 +16,7 @@ public class DBHelper extends SQLiteOpenHelper {
         String createTableStatement = "CREATE TABLE " + "transactions" + " (id INTEGER PRIMARY KEY AUTOINCREMENT, label VARCHAR(255) NOT NULL, amount REAL NOT NULL DEFAULT 0, description TEXT, createdAt DATE DEFAULT CURRENT_DATE)";
         db.execSQL(createTableStatement);
 
-        createTableStatement = "CREATE TABLE " + "expenseLimits" + " (expenseLimit REAL DEFAULT 0)";
+        createTableStatement = "CREATE TABLE " + "expenseLimits" + " (id INTEGER PRIMARY KEY, expenseLimit REAL DEFAULT 0)";
         db.execSQL(createTableStatement);
     }
 

@@ -1,4 +1,4 @@
-package com.project.financetracker;
+package com.project.financetracker.activities;
 
 import android.os.Bundle;
 
@@ -12,6 +12,7 @@ import android.widget.RadioGroup;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.project.financetracker.R;
 import com.project.financetracker.constants.Constant;
 import com.project.financetracker.model.TransactionModel;
 import com.project.financetracker.repository.ITransactionRepository;
